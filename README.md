@@ -1,2 +1,1 @@
-# rpi4-retro
-A port of ultibo-retro-gui to RPi4/Raspbian
+Trying to port ultibo-retro-gui to RPi4/Raspbian
