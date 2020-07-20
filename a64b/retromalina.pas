@@ -12,78 +12,70 @@
 //
 // Retromachine memory map @bytes
 // BASE - this is dynamic, the memory will be get from the OS
+// All addresses below relative to base
 //
 // 0000_0000  -  heap_start (about 0190_0000) - Ultibo area
 // Heap start -  2EFF_FFFF retromachine program area, about 720 MB
 //
-// BASE=$2FF0_0000 - this can change or become dynamic
 //
-// 2FF0_0000  -  2FF0_FFFF - 6502 area
-//    2FF0_D400  -  2FF0_D418 SID
-//    2FF0_D420  -  POKEY --- TODO
+// 0000_0000  -  2FF0_FFFF - 6502 area
+//    0000_D400  -  2FF0_D418 SID
+//    0000_D420  -  POKEY --- TODO
 //
-// 2FF1_0000  -  2FF5_FFFF - system data area
-//    2FF1_0000  -  2FF4_FFFF pallette banks; 65536 entries
-//    2FF5_0000  -  2FF5_1FFF font definition; 256 char @8x16 px
-//    2FF5_2000  -  2FF5_9FFF static sprite defs 8x4k
-//    2FF5_A000  -  2FF5_FFFF reserved for future OS/BASIC
+// 0001_0000  -  2FF5_FFFF - system data area
+//    0001_0000  -  0004_FFFF pallette banks; 65536 entries
+//    0005_0000  -  0005_1FFF font definition; 256 char @8x16 px
+//    0005_2000  -  0005_9FFF static sprite defs 8x4k
+//    0005_A000  -  0005_FFFF static display list area
 //
-// 2FF6_0000  -  2FF6_FFFF --- copper
-//    2FF6_0000 - frame counter
-//    2FF6_0004 - display start
-//    2FF6_0008 - current graphics mode   ----TODO
-//      2FF6_0009 - bytes per pixel
-//    2FF6_000C - border color
-//    2FF6_0010 - pallette bank           ----TODO
-//    2FF6_0014 - horizontal pallette selector: bit 31 on, 30..20 add to $60010, 11:0 pixel num. ----TODO
-//    2FF6_0018 - display list start addr  ----TODO
-//                DL entry: 00xx_YYLLL_MM - display LLL lines in mode MM
-//                            xx: 00 - do nothing
-//                                01 - raster interrupt
-//                                10 - set pallette bank YY
-//                                11 - set horizontal scroll at YY
-//                          10xx_AAAAAAA - set display address to xxAAAAAAA
-//                          11xx_AAAAAAA - goto address xxAAAAAAA
-//    2FF6_001C - horizontal scroll right register ----TODO
-//    2FF6_0020 - x res
-//    2FF6_0024 - y res
-//    2FF6_0028 - KBD. 28 - ASCII 29 modifiers, 2A raw code 2B key released
-//    2FF6_002C - mouse. 6002c,d x 6002e,f y
-//    2FF6_0030 - mouse keys, 2FF6_0032 - mouse wheel; 127 up 129 down
-//    2FF6_0034 - current dl position ----TODO
-//    2FF6_0040 - 2FF6_007C sprite control long 0 31..16 y pos  15..0 x pos
+// 0006_0000  -  0006_FFFF --- copper
+//    0006_0000 - frame counter
+//    0006_0004 - display start
+//    0006_0008 - current graphics mode   ----TODO
+//      0006_0009 - bytes per pixel
+//    0006_000C - border color
+//    0006_0010 - pallette bank           ----TODO
+//    0006_0014 - horizontal pallette selector: bit 31 on, 30..20 add to $60010, 11:0 pixel num. ----TODO
+//    0006_0018 - display list start addr  ----TODO
+//    0006_001C - horizontal scroll right register ----TODO
+//    0006_0020 - x res
+//    0006_0024 - y res
+//    0006_0028 - KBD. 28 - ASCII 29 modifiers, 2A raw code 2B key released
+//    0006_002C - mouse. 6002c,d x 6002e,f y
+//    0006_0030 - mouse keys, 0006_0032 - mouse wheel; 127 up 129 down
+//    0006_0034 - current dl position ----TODO
+//    0006_0040 - 2FF6_007C sprite control long 0 31..16 y pos  15..0 x pos
 //                                         long 1 30..16 y zoom 15..0 x zoom
-//    2FF6_0080 - 2FF6_009C dynamic sprite data pointer
-//    2FF6_00A0 - text cursor position
-//    2FF6_00A4 - text color
-//    2FF6_00A8 - background color
-//    2FF6_00AC - text size and pitch
-//    2FF6_00B0 - double buffer screen #1 address
-//    2FF6_00B4 - double buffer screen #2 address
-//    2FF6_00B8 - native x resolution
-//    2FF6_00BC - native y resolution
-//    2FF6_00C0 - initial DL area
+//    0006_0080 - 0006_009C dynamic sprite data pointer
+//    0006_00A0 - text cursor position
+//    0006_00A4 - text color
+//    0006_00A8 - background color
+//    0006_00AC - text size and pitch
+//    0006_00B0 - text x res
+//    0006_00B4 - text y res
+//    0006_00B8 - native x resolution
+//    0006_00BC - native y resolution
+
+//    0006_0100 - 0006_01FF - blitter  TODO
+//    0006_0200 - 0006_02FF - paula    TODO
+//    0006_0300 - 0006_0?FF - FM synth TODO
 
 
-//
-//    2FF6_0100 - 2FF6_01FF - blitter
-//    2FF6_0200 - 2FF6_02FF - paula
-//    2FF6_0300 - 2FF6_0?FF - FM synth
+//    0006_0F00 - system data area
+//    0006_0F00 - CPU clock
+//    0006_0F04 - CPU temperature
+//    0006_0FF8 - kbd report
 
-
-//    2FF6_0F00 - system data area
-//    2FF6_0F00 - CPU clock
-//    2FF6_0F04 - CPU temperature
-//    2FF6_0FF8 - kbd report
-
-//    2FF7_0000  -  2FFF_FFFF - retromachine system area
-//    3000_0000  -  30FF_FFFF - virtual framebuffer area
-//    3100_0000  -  3AFF_FFFF - Ultibo system memory area
-//    3B00_0000  -  3EFF_FFFF - GPU memory
-//    3F00_0000  -  3FFF_FFFF - RPi real hardware registers
+//    0007_0000  -  2FFF_FFFF - retromachine system area
+//    3F00_0000  -  3FFF_FFFF - virtual framebuffer area  in 1 GB version (for 4 GB RPi4)
 
 
 // TODO planned retromachine graphic modes:
+
+// -- in 2560 family:
+
+
+
 // 00..15 Propeller retromachine compatible - TODO
 // 16 - 1792x1120 @ 8bpp
 // 17 - 896x560 @ 16 bpp
@@ -102,6 +94,10 @@
 // MM: 00: hi, 01 med 10 low 11 native borderless
 // DD: 00 8bpp 01 16 bpp 10 32 bpp 11 border
 
+// new dl 20200614
+
+//zoom2-colors2-border1-scroll1-gr/txt1-borderline1-pallette#8-scroll4-pixels12
+
 
 // ----------------------------   This is still alpha quality code
 
@@ -109,15 +105,17 @@
 unit retromalina;
 
 {$mode objfpc}{$H+}
-
+{$WARN 4055 off : Conversion between ordinals and pointers is not portable}
 interface
 
-uses unix,baseunix,sysutils,classes,retro;
+uses unix,baseunix,sysutils,classes,retro,sdl2, retrokeyboard,raymarch;
 
 
-var base_:array[0..$FFFFF] of byte;        // system area base
-    base:cardinal;
-    mainscreen:cardinal;  // mainscreen area
+var base_:array[0..$3FFFFFFF] of byte;        // system area base
+    base:uint64;
+    mainscreen:uint64;  // mainscreen area
+      desired,obtained:TSDL_AudioSpec;                // zmienne do inicjacji audio
+
 
 
 const _pallette=        $10000;
@@ -178,13 +176,11 @@ const _pallette=        $10000;
       _textcolor=       $600A4;
       _bkcolor=         $600A8;
       _textsize=        $600AC;
-      _audiodma=        $600C0;
-      _dblbufscn1=      $60400;
-      _dblbufscn2=      $60404;
-      _nativex=         $60408;
-      _nativey=         $6040C;
-      _initialdl=       $60410;
+      _nativex=         $600B0;
+      _nativey=         $600B4;
+      _displaystarthi=  $600B8;
       _kbd_report=      $60FF8;
+
 
 
 type
@@ -199,6 +195,21 @@ type
        Constructor Create(CreateSuspended : boolean);
      end;
 
+     Tmouse= class(TThread)
+     private
+     protected
+       procedure Execute; override;
+     public
+      Constructor Create(CreateSuspended : boolean);
+     end;
+
+     TKeyboard= class(TThread)
+     private
+     protected
+       procedure Execute; override;
+     public
+      Constructor Create(CreateSuspended : boolean);
+     end;
 
 type fb_var_screeninfo=record
 
@@ -245,7 +256,7 @@ type fb_var_screeninfo=record
 
 type fb_fix_screeninfo=record
   	id:array[0..15] of char;        //* identification string eg "TT Builtin"
-  	smem_start:cardinal;    	//* Start of frame buffer mem
+  	smem_start:PtrUint ;    	//* Start of frame buffer mem
   					//* (physical address)
   	smem_len:cardinal;		//* Length of frame buffer mem
   	atype:cardinal;			//* see FB_TYPE_*
@@ -255,7 +266,7 @@ type fb_fix_screeninfo=record
   	ypanstep:word;		//* zero if no hardware panning
   	ywrapstep:word;		//* zero if no hardware ywrap
   	line_length:cardinal;		//* length of a line in bytes
-  	mmio_start:cardinal;	        //* Start of Memory Mapped I/O
+  	mmio_start:PtrUint;	        //* Start of Memory Mapped I/O
   					//* (physical address)
   	mmio_len:cardinal;		//* Length of Memory Mapped I/O
   	accel:cardinal;			//* Indicate to driver which
@@ -294,7 +305,7 @@ var fh,filetype:integer;                // this needs cleaning...
 
     textcursoron:boolean=false;
     running,vblank1:integer;
-    tim, t, ts: int64;
+    tim, t,ttt, ts: int64;
 
 
     mp3time:int64;
@@ -410,31 +421,33 @@ var fh,filetype:integer;                // this needs cleaning...
     textsizex:       byte     absolute base_[_textsize];
     textsizey:       byte     absolute base_[_textsize+1];
     textpitch:       byte     absolute base_[_textsize+2];
-    audiodma1:       array[0..7] of cardinal absolute base_[_audiodma];
-    audiodma2:       array[0..7] of cardinal absolute base_[_audiodma+32];
-    dblbufscn1:      cardinal absolute base_[_dblbufscn1];
-    dblbufscn2:      cardinal absolute base_[_dblbufscn2];
+//    audiodma1:       array[0..7] of cardinal absolute base_[_audiodma];
+//    audiodma2:       array[0..7] of cardinal absolute base_[_audiodma+32];
+//    dblbufscn1:      cardinal absolute base_[_dblbufscn1];
+//    dblbufscn2:      cardinal absolute base_[_dblbufscn2];
     nativex:         cardinal absolute base_[_nativex];
     nativey:         cardinal absolute base_[_nativey];
+    displaystarthi:  cardinal absolute base_[_displaystarthi];
 
-    kbdreport:       array[0..7] of byte absolute base_[_kbd_report];
+   kbdreport:       array[0..7] of byte absolute base_[_kbd_report];
 
 
     error:integer;
     framesize:integer;
-    backgroundaddr:integer;
-    screenaddr:integer;
-    redrawing:integer;
+    backgroundaddr:uint64;
+    screenaddr:uint64;
+    redrawing:uint64;
     windowsdone:boolean=false;
     drive:string;
 
-    mp3frames:integer=0;
+
     debug1,debug2,debug3:cardinal;
        mmm:integer;
 
            screensize:integer;
      fbresult:integer;
-
+     amouse:tmouse ;
+    akeyboard:tkeyboard ;
 
 
 
@@ -449,19 +462,19 @@ procedure cls(c:integer);
 procedure putpixel(x,y,color:integer);
 procedure putchar(x,y:integer;ch:char;col:integer);
 procedure outtextxy(x,y:integer; t:string;c:integer);
-procedure blit(from,x,y,too,x2,y2,length,lines,bpl1,bpl2:integer);
-procedure box(x,y,l,h,c:integer);
+procedure blit(from,x,y,too,x2,y2,length,lines,bpl1,bpl2:int64);
+procedure box(x,y,l,h,c:int64);
 procedure box2(x1,y1,x2,y2,color:integer);
 
 
 function gettime:int64;
 procedure poke(addr:uint64;b:byte);
 procedure dpoke(addr:uint64;w:word);
-procedure lpoke(addr:uint64;c:uint64);
+procedure lpoke(addr:uint64;c:uint32);
 procedure slpoke(addr:uint64;i:integer);
 function peek(addr:uint64):byte;
 function dpeek(addr:uint64):word;
-function lpeek(addr:uint64):uint64;
+function lpeek(addr:uint64):cardinal;
 function slpeek(addr:uint64):integer;
 procedure sethidecolor(c,bank,mask:cardinal);
 procedure fcircle(x0,y0,r,c:integer);
@@ -483,30 +496,304 @@ function click:boolean;
 function dblclick:boolean;
 procedure waitvbl;
 
-function remapram(from,too,size:cardinal):cardinal;
+
 function readwheel: shortint; inline;
 procedure unhidecolor(c,bank:cardinal);
 procedure scrconvertnative(src,screen:pointer);
-procedure scrconvertnative2(src,screen:pointer);
+
+
 procedure print(line:string);
 procedure println(line:string);
 procedure printscreen;
 
+// ---- libc functions
 
-function removeramlimits(address,length:uint64;params:integer):integer; cdecl; external 'libramlimit';
-{$linklib 'ramlimit'}
+function mprotect(address:pointer;length:uint64;params:integer):integer; cdecl; external 'libc';
+function fopen(name,mode:PChar):ptruint; cdecl; external 'libc';
+function fread(bufor:pointer;size,number:int64;fh:ptruint):ptrint; cdecl; external 'libc';
+function fclose(fh:ptruint):ptrint; cdecl; external 'libc';
+
 {$linklib 'c'}
+
+
+function sdl_sound_init(Q:integer):integer;
+
+var bufor:array[0..8191] of smallint;
+    b2:array[0..16383] of byte absolute bufor;
+
+type
+    TMousereport=array[0..3] of integer;
+    type md=record
+        d1,d2:ptruint;
+        c1,c2:word;
+        b:integer;
+        end;
 
 implementation
 
+// ---- more pascal-like wrappers for libc fopen and fread
 
-procedure scrconvert(src,screen:pointer); forward;
+function fileopen2(n,m:string):ptrint;
+
+begin
+result:=ptrint(fopen(pchar(n),pchar(m)));
+end;
+
+function fileread2(fh:ptruint;buffer:pointer;il:ptruint):ptrint;
+
+begin
+result:=fread(buffer,1,il,fh);
+end;
+
+function fileclose2(fh:ptrint):ptrint;
+begin
+result:=fclose(fh);
+end;
+
+function removeramlimits(address,length:uint64;params:integer):integer;
+
+begin
+result:=mprotect(pointer(address and $FFFFFFFFFFFFF000),length,params);
+end;
+
+procedure AudioCallback(userdata:pointer; audio:Pbyte; length:longint); cdecl;
+
+begin
+for i:=0 to length-1 do audio[i]:=b2[i];
+//box(100,100,100,100,0); outtextxyz(100,100,inttostr(length),40,2,2);
+end;
+
+function sdl_sound_init(q:integer):integer;
+
+// Zainicjuj bibliotekę sdl_sound
+
+begin
+Result:=0;
+
+if SDL_Init(SDL_INIT_AUDIO) <> 0 then
+  begin
+  Result:=-1; // sdl_audio nie da się zainicjować
+  exit;
+  end;
+
+desired.freq := q;                                     // sample rate
+desired.format := AUDIO_S16;                               // 16-bit samples
+desired.samples := 4096;                                   // sample na 1 callback
+desired.channels := 2;                                     // stereo
+desired.callback := @AudioCallback;
+desired.userdata := nil;                                   // niepotrzebne poki co
+
+if (SDL_OpenAudio(@desired, @obtained) < 0) then
+  begin
+    Result:=-2;   // nie da się otworzyć urządzenia
+  end;
+end;
+
 procedure sprite(screen:pointer); forward;
-procedure sprite2(screen:pointer); forward;
 
-procedure scrconvertnative3(src,screen:pointer); forward;
+// ---- TMouse thread methods --------------------------------------------------
 
-var testscreen1, testscreen2:array[0..1920*1200-1] of cardinal;
+constructor TMouse.Create(CreateSuspended : boolean);
+
+begin
+FreeOnTerminate := True;
+inherited Create(CreateSuspended);
+end;
+
+procedure TMouse.Execute;
+
+var il,i:integer;
+    x,y,w:integer;
+    m:array[0..2] of integer;
+    buttons:integer=0;
+    offsetx,offsety,wheel:integer;
+
+    mm2:array[0..23] of byte;
+    mm:md absolute mm2;
+
+
+    mousefile:int64;
+       name:string;
+    rec:TSearchrec;
+begin
+
+if findfirst('/dev/input/by-id/*event-mouse',faanyfile,rec)=0 then
+  begin
+  name:=rec.name;
+  findclose(rec);
+  name:='/dev/input/by-id/'+name;
+  mousefile:=fileopen2(name,'rb');
+  end;
+
+// Open the mouse file for reading
+
+mousefile:=fileopen2(name,'rb');
+
+repeat
+
+ il:=fileread2(mousefile,@mm2[0],24);       //TODO: reopen a mouse file if failed
+
+ if il<24 then
+   begin
+   repeat
+     if findfirst('/dev/input/by-id/*event-mouse',faanyfile,rec)=0 then
+       begin
+       name:=rec.name;
+       findclose(rec);
+       name:='/dev/input/by-id/'+name;
+       mousefile:=fileopen2(name,'rb');
+       sleep(100);
+       end
+     else sleep(100);
+   until mousefile>0;
+  end;
+
+
+
+ m[0]:=mm.c1;
+ m[1]:=mm.c2;
+ m[2]:=mm.b;
+
+ offsetx:=0; offsety:=0; wheel:=0;
+
+  if m[0]=2 then
+    begin
+    if m[1]=0 then offsetx:=m[2] else offsetx:=0;
+    if m[1]=1 then offsety:=m[2] else offsety:=0;
+    if m[1]=8 then wheel:=m[2] else wheel:=0;
+    end;
+  if m[0]=1 then
+    begin
+    if m[1]=272 then if m[2]=1 then buttons:=buttons or 1 else buttons:=buttons and $FE;
+    if m[1]=273 then if m[2]=1 then buttons:=buttons or 2 else buttons:=buttons and $FD;
+    if m[1]=274 then if m[2]=1 then buttons:=buttons or 4 else buttons:=buttons and $FB;
+    end;
+
+
+
+  x:=mousex+offsetx;
+  if x<0 then x:=0;
+  if x>(xres-1) then x:=xres-1;
+  mousex:=x;
+  y:=mousey+offsety;
+  if y<0 then y:=0;
+  if y>(yres-1) then y:=yres-1;
+  mousey:=y;
+  mousek:=Buttons and 255;
+  if wheel<-1 then wheel:=-1;
+  if wheel>1 then wheel:=1;
+  w:=mousewheel+Wheel;
+  if w<127 then w:=127;
+  if w>129 then w:=129;
+  mousewheel:=w;
+  sprite7xy:=mousexy
+until terminated;
+end;
+
+// ---- TKeyboard thread methods --------------------------------------------------
+
+constructor TKeyboard.Create(CreateSuspended : boolean);
+
+begin
+FreeOnTerminate := True;
+inherited Create(CreateSuspended);
+end;
+
+
+procedure TKeyboard.Execute;
+
+// At every vblank the thread tests if there is a report from the keyboard
+// If yes, the kbd codes are poked to the system variables
+// $60028 - translated code
+// $60029 - modifiers
+// $6002A - raw code
+// This thread also tracks mouse clicks
+
+const m:integer=0;
+      c:integer=0;
+      dblclick:integer=0;
+      dblcnt:integer=0;
+      clickcnt:integer=0;
+      click:integer=0;
+
+var ch:TKeyboardReport;
+    i:integer;
+
+
+begin
+for i:=0 to 3 do kbdreport[i]:=0;
+repeat
+  waitvbl;
+ // sprite7xy:=mousexy;//+$00280040;           //sprite coordinates are fullscreen
+                                             //while mouse is on active screen only
+
+  if mousedblclick=2 then begin dblclick:=0; dblcnt:=0; mousedblclick:=0; end;
+  if (dblclick=0) and (mousek=1) then begin dblclick:=1; dblcnt:=0; end;
+  if (dblclick=1) and (mousek=0) then begin dblclick:=2; dblcnt:=0; end;
+  if (dblclick=2) and (mousek=1) then begin dblclick:=3; dblcnt:=0; end;
+  if (dblclick=3) and (mousek=0) then begin dblclick:=4; dblcnt:=0; end;
+
+  inc(dblcnt); if dblcnt>10 then begin dblcnt:=10; dblclick:=0; end;
+  if dblclick=4 then mousedblclick:=1 {else mousedblclick:=0};
+
+  if peek(base+$60031)=2 then begin click:=2; clickcnt:=10; end;
+  if (mousek=1) and (click=0) then begin click:=1; clickcnt:=0; end;
+  inc(clickcnt); if clickcnt>10 then  begin clickcnt:=10; click:=2; end;
+  if (mousek=0) then click:=0;
+  if click=1 then mouseclick:=1 else mouseclick:=0;
+
+// now the kbdrecord
+
+ ch:=getkeyboardreport;
+
+ if ch[0]<>$7FFFFF then
+   begin
+   if ch[0]=1 then
+     begin
+     if ch[2]>0 then
+       begin
+       key_scancode:=ch[1];
+
+    // 29 rctl | 42 rsh | 125 rwin | 56 ralt | 97 lctl | 126 lwin | 100 lalt | 54 lshift
+    // mbits= RW RA RC RS LW LA LC LS
+
+       if key_scancode=54 then key_modifiers:=key_modifiers or 1;
+       if key_scancode=97 then key_modifiers:=key_modifiers or 2;
+       if key_scancode=100 then key_modifiers:=key_modifiers or 4;
+       if key_scancode=126 then key_modifiers:=key_modifiers or 8;
+       if key_scancode=42 then key_modifiers:=key_modifiers or 16;
+       if key_scancode=29 then key_modifiers:=key_modifiers or 32;
+       if key_scancode=56 then key_modifiers:=key_modifiers or 64;
+       if key_scancode=127 then key_modifiers:=key_modifiers or 128;
+       end
+     else // ch[2]=0 ->release
+       begin
+       key_release:=ch[1];
+       if key_release=54 then key_modifiers:=key_modifiers and  %11111110;
+       if key_release=97 then key_modifiers:=key_modifiers and  %11111101;
+       if key_release=100 then key_modifiers:=key_modifiers and %11111011;
+       if key_release=126 then key_modifiers:=key_modifiers and %11110111;
+       if key_release=42 then key_modifiers:=key_modifiers and  %11101111;
+       if key_release=29 then key_modifiers:=key_modifiers and  %11011111;
+       if key_release=56 then key_modifiers:=key_modifiers and  %10111111;
+       if key_release=127 then key_modifiers:=key_modifiers and %01111111;
+       end;
+     end;
+   end;
+
+ m:=key_modifiers;
+ c:=byte(translatescantochar(key_scancode,0));
+ if (m and $11)<>0 then c:=byte(translatescantochar(key_scancode,1));
+ if (m and $41)=$40 then c:=byte(translatescantochar(key_scancode,2));
+ if (m and $41)=$41 then c:=byte(translatescantochar(key_scancode,3));
+ key_charcode:=byte(c);
+ until terminated;
+end;
+
+
+
+
+//var testscreen1, testscreen2:array[0..1920*1200-1] of cardinal;
 
 // ---- TRetro thread methods --------------------------------------------------
 
@@ -535,63 +822,40 @@ var i,dummy:integer;
 
 begin
 ThreadSetPriority(GetCurrentThreadId,-15);
-for i:=0 to 100000 do lpoke(cardinal(p2)+4*i,$00FF00);
 running:=1;
 repeat
   begin
   vblank1:=0;
   t:=gettime;
-  if fbresult=0 then scrconvertnative(pointer(mainscreen+$800000),p2)    // classic driver
-  else
-    begin
-    scrconvertnative2(pointer(mainscreen+$800000),@testscreen1);                // new driver
-    sprite2(@testscreen1);
-    end;
-  tim:=gettime-t;
-
-  screenaddr:=mainscreen+$800000;
-
-  t:=gettime;
-  if fbresult=0 then sprite(p2);// else sprite2(p2);
-  ts:=gettime-t;
+  scrconvertnative(pointer(mainscreen),p2);    // classic driver
+  ttt:=gettime-t;
+    t:=gettime;
+  sprite(p2);
+     ts:=gettime-t;
   vblank1:=1;
   framecnt+=1;
 
-  vinfo.yoffset := 0;
   dummy := 0;
-
-  if fbresult=0 then fpioctl(fbfd, FBIOPAN_DISPLAY, @vinfo);
+  vinfo.yoffset := 0;
+  fpioctl(fbfd, FBIOPAN_DISPLAY, @vinfo);
   fpioctl(fbfd, FBIO_WAITFORVSYNC, @dummy);
 
-  if fbresult<>0 then  move(testscreen1, p2^,4*1920*1080);
 
   vblank1:=0;
-  t:=gettime;
+ // box(100,100,100,100,framecnt);
 
-  if fbresult=0 then scrconvertnative(pointer(mainscreen+$b00000),p2+(xres+64)*(yres{+32}))
-  else
-    begin
-    scrconvertnative2(pointer(mainscreen+$b00000),@testscreen2);
-    sprite2(@testscreen2);
+  scrconvertnative(pointer(mainscreen),p2+4*(xres+64)*(yres)) ;
+   sprite(p2+4*(xres+64)*(yres));
 
-    end;
-  tim:=gettime-t;
-
-  screenaddr:=mainscreen+$b00000;
-
-  t:=gettime;
-  if fbresult=0 then sprite(p2+(xres+64)*(yres));// else   sprite2(p2);
-  ts:=gettime-t;
   vblank1:=1;
   framecnt+=1;
 
-  if fbresult=0 then vinfo.yoffset := yres else vinfo.yoffset := 0; ;
+
   dummy := 0;
-
-  if fbresult=0 then fpioctl(fbfd, FBIOPAN_DISPLAY, @vinfo);
-
+  vinfo.yoffset := yres;
+  fpioctl(fbfd, FBIOPAN_DISPLAY, @vinfo);
   fpioctl(fbfd, FBIO_WAITFORVSYNC, @dummy);
-  if fbresult<>0 then move(testscreen2, p2^,4*1920*1080);
+
 
   end;
 until terminated;
@@ -615,8 +879,8 @@ var i:integer;
 
 begin
 
-base:=cardinal(@base_);
-mainscreen:=cardinal(fpmmap(nil,$1000000,prot_read or prot_write or prot_exec,map_shared or map_anonymous,0,0));
+base:=uint64(@base_);
+mainscreen:=base+$3f000000;//uint64(fpmmap(nil,$1000000,prot_read or prot_write or prot_exec,map_shared or map_anonymous,0,0));
 
 backgroundaddr:=mainscreen;
 screenaddr:=mainscreen+$800000;
@@ -628,6 +892,7 @@ for i:=base to base+$FFFFF do poke(i,0);
 
 fbfd := fileopen('/dev/fb0', fmOpenReadWrite or $40);
 fpioctl(fbfd, FBIOGET_VSCREENINFO, @vinfo);
+
 nativex:=vinfo.xres;
 nativey:=vinfo.yres;
 
@@ -647,32 +912,57 @@ vinfo.bits_per_pixel:=32;
 vinfo.xres:=xres;
 vinfo.yres:=yres;
 vinfo.xres_virtual:=vinfo.xres+64;
-vinfo.yres_virtual:=vinfo.yres*2;
+vinfo.yres_virtual:=vinfo.yres*2+1;
 fbresult:=fpioctl(fbfd, FBIOPUT_VSCREENINFO, @vinfo); // todo check and exit
 
 sleep(300);
 kbfd := fileopen('/dev/tty1', fmOpenWrite);     // 2 for debug
 if (kbfd > 0) then fpioctl(kbfd, KDSETMODE, @KD_GRAPHICS);
 
-fpioctl(fbfd, FBIOGET_FSCREENINFO, @finfo);
+fbresult:=fpioctl(fbfd, FBIOGET_FSCREENINFO, @finfo);
 screensize := finfo.smem_len;
 p2:=fpmmap(nil,screensize, PROT_READ or PROT_WRITE, MAP_SHARED, fbfd, 0);
 
-  for i:=0 to 100000 do lpoke(cardinal(p2)+4*i,$FFFFFF);
+//for i:=0 to (1984*1080)-1 do lpoke(ptruint(p2)+4*i,$0);
+
+//for i:=1984*1080 to 2*(1984*1080)-1 do lpoke(ptruint(p2)+4*i,$FF00);
 
 //  thread:=tretro.create(true);
 //  thread.start;
 
 bordercolor:=0;
-displaystart:=mainscreen;                 // vitual framebuffer address
+displaystart:=mainscreen and $FFFFFFFF;                 // vitual framebuffer address
+displaystarthi:=mainscreen shr 32;
 framecnt:=0;                              // frame counter
+
+
+//init all sprites
+
+for i:=0 to 7 do spritepointers[i]:=$52000+100*i;
+sprite0xy:=$08000800;
+sprite1xy:=$08000800;
+sprite2xy:=$08000800;
+sprite3xy:=$08000800;
+sprite4xy:=$08000800;
+sprite5xy:=$08000800;
+sprite6xy:=$08000800;
+sprite0zoom:=$00010001;
+sprite1zoom:=$00010001;
+sprite2zoom:=$00010001;
+sprite3zoom:=$00010001;
+sprite4zoom:=$00010001;
+sprite5zoom:=$00010001;
+sprite6zoom:=$00010001;
+
 
 // init pallette, font and mouse cursor
 
 //systemfont:=vgafont;
 systemfont:=st4font;
 sprite7def:=mysz;
-sprite7zoom:=$00010001;
+sprite7zoom:=$00200020;
+sprite7x:=1000;
+sprite7y:=500;
 setpallette(ataripallette,0);
 for i:=$10000 to $10000+1023 do if (i mod 4) = 0 then lpoke(base+i,lpeek(base+i) or $FF000000);
 // init sprite data pointers
@@ -682,8 +972,7 @@ for i:=0 to 7 do spritepointers[i]:=base+_sprite0def+4096*i;
 
 
 
-//removeramlimits(integer(@sprite));
-//removeramlimits(integer(@sprite2));
+removeramlimits(uint64(@sprite),16384,7);
 
 mousex:=xres div 2;
 mousey:=yres div 2;
@@ -695,6 +984,16 @@ mousewheel:=128;
 // start frame refreshing thread
 thread:=tretro.create(true);
 thread.start;
+
+mousedata:=mysz;
+for i:=0 to 1023 do if mousedata[i]<>0 then mousedata[i]:=mousedata[i] or $FF000000;
+amouse:=tmouse.create(true);
+amouse.start;
+
+akeyboard:=tkeyboard.create(true);
+akeyboard.start;
+
+//startmousereportbuffer;
 
 // start windows --- TODO - remove this from here!!!
 poke(base+$1000,mmm);
@@ -711,7 +1010,8 @@ procedure stopmachine;
 
 begin
 thread.terminate;
-repeat until running=0;
+sleep(100);
+repeat sleep(1) until running=0;
 
 //windows.terminate;
 if (kbfd >= 0) then
@@ -721,666 +1021,93 @@ if (kbfd >= 0) then
   fileclose(kbfd);
   end;
 fpmunmap(p2,screensize);
-fpmunmap(pointer(mainscreen),$1000000);
+fileclose(fbfd);
+//fpmunmap(pointer(mainscreen),$1000000);
 end;
 
 // -----  Screen convert procedures
-
-procedure scrconvert(src,screen:pointer);
-
-// --- rev 21070111
-
-var a,b,c:integer;
-    e:integer;
-
-label p1,p0,p002,p10,p11,p12,p999;
-
-begin
-a:=displaystart;
-c:=integer(src);//$30800000;  // map start
-e:=bordercolor;
-b:=base+_pallette;
-                           {
-                asm
-
-                stmfd r13!,{r0-r12,r14}   //Push registers
-                ldr r1,c
-                ldr r2,screen
-                ldr r3,b
-                mov r5,r2
-
-                //upper border
-
-                add r5,#307200
-                ldr r4,e
-                mov r6,r4
-                mov r7,r4
-                mov r8,r4
-                mov r9,r4
-                mov r10,r4
-                mov r12,r4
-                mov r14,r4
-
-
-p10:            stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                cmp r2,r5
-                blt p10
-
-                mov r0,#1120
-
-p11:            add r5,#256
-
-                //left border
-
-p0:             stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-
-                                    //active screen
-                add r5,#7168
-
-p1:
-                ldm r1!,{r4,r9}
-
-                mov r6,r4,lsr #8
-                mov r7,r4,lsr #16
-                mov r8,r4,lsr #24
-                mov r10,r9,lsr #8
-                mov r12,r9,lsr #16
-                mov r14,r9,lsr #24
-
-                and r4,#0xFF
-                and r6,#0xFF
-                and r7,#0xFF
-                and r9,#0xFF
-                and r10,#0xFF
-                and r12,#0xFF
-
-                ldr r4,[r3,r4,lsl #2]
-                ldr r6,[r3,r6,lsl #2]
-                ldr r7,[r3,r7,lsl #2]
-                ldr r8,[r3,r8,lsl #2]
-                ldr r9,[r3,r9,lsl #2]
-                ldr r10,[r3,r10,lsl #2]
-                ldr r12,[r3,r12,lsl #2]
-                ldr r14,[r3,r14,lsl #2]
-
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                ldm r1!,{r4,r9}
-
-                mov r6,r4,lsr #8
-                mov r7,r4,lsr #16
-                mov r8,r4,lsr #24
-                mov r10,r9,lsr #8
-                mov r12,r9,lsr #16
-                mov r14,r9,lsr #24
-
-                and r4,#0xFF
-                and r6,#0xFF
-                and r7,#0xFF
-                and r9,#0xFF
-                and r10,#0xFF
-                and r12,#0xFF
-
-                ldr r4,[r3,r4,lsl #2]
-                ldr r6,[r3,r6,lsl #2]
-                ldr r7,[r3,r7,lsl #2]
-                ldr r8,[r3,r8,lsl #2]
-                ldr r9,[r3,r9,lsl #2]
-                ldr r10,[r3,r10,lsl #2]
-                ldr r12,[r3,r12,lsl #2]
-                ldr r14,[r3,r14,lsl #2]
-
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                cmp r2,r5
-                blt p1
-
-                                  //right border
-                add r5,#256
-                ldr r4,e
-                mov r6,r4
-                mov r7,r4
-                mov r8,r4
-                mov r9,r4
-                mov r10,r4
-                mov r12,r4
-                mov r14,r4
-
-
-p002:           stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                subs r0,#1
-                bne p11
-                                  //lower border
-                add r5,#307200
-
-p12:            stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                cmp r2,r5
-                blt p12
-p999:           ldmfd r13!,{r0-r12,r14}
-                end;
-                                }
-
-end;
-
 
 procedure scrconvertnative(src,screen:pointer);
 
 // --- rev 21070608
 
-var a,b,c:cardinal;
-    e:integer;
-    nx,ny:cardinal;
+var b:ptruint;
+    dxstart,nx,ny:uint64;
 
-label p1,p0,p002,p10,p11,p12,p999;
+label p1,p2;
 
 begin
-a:=displaystart;
-c:=integer(src);//$30800000;  // map start
-e:=bordercolor;
+
 b:=base+_pallette;
-ny:=yres;//nativey;
-nx:=xres*4;//nativex*4;
-                          {
+ny:=yres;
+nx:=(xres*4)+256;
+dxstart:=base+lpeek(base+$60018);
+
                 asm
+                ldr x0,screen
+                ldr x1,ny
+                ldr x2,nx
+                mov x3,#0
+                ldr x5,src
+                add x5,x5,#64
+                ldr x6,b
 
-                stmfd r13!,{r0-r12,r14}   //Push registers
-                ldr r1,c
-                ldr r2,screen
-                ldr r3,b
-                mov r5,r2
-                sub r2,#256
-                sub r5,#256
+p2:             add x4,x2,x0
+                sub x5,x5,#64
 
-                //upper border
+p1:             ldrb w3,[x5],#1
+                ldr w7,[x6,x3,lsl #2]
+                str w7,[x0],#4
+                cmp x0,x4
+                b.lt p1
 
-
-                ldr r0,ny
-
-p11:            ldr r4,nx                                   //active screen
-                add r5,r4 //#7168
-                 add r2,#256
-                 add r5,#256
-
-p1:
-                ldm r1!,{r4,r9}
-
-                mov r6,r4,lsr #8
-                mov r7,r4,lsr #16
-                mov r8,r4,lsr #24
-                mov r10,r9,lsr #8
-                mov r12,r9,lsr #16
-                mov r14,r9,lsr #24
-
-                and r4,#0xFF
-                and r6,#0xFF
-                and r7,#0xFF
-                and r9,#0xFF
-                and r10,#0xFF
-                and r12,#0xFF
-
-                ldr r4,[r3,r4,lsl #2]
-                ldr r6,[r3,r6,lsl #2]
-                ldr r7,[r3,r7,lsl #2]
-                ldr r8,[r3,r8,lsl #2]
-                ldr r9,[r3,r9,lsl #2]
-                ldr r10,[r3,r10,lsl #2]
-                ldr r12,[r3,r12,lsl #2]
-                ldr r14,[r3,r14,lsl #2]
-
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                ldm r1!,{r4,r9}
-
-                mov r6,r4,lsr #8
-                mov r7,r4,lsr #16
-                mov r8,r4,lsr #24
-                mov r10,r9,lsr #8
-                mov r12,r9,lsr #16
-                mov r14,r9,lsr #24
-
-                and r4,#0xFF
-                and r6,#0xFF
-                and r7,#0xFF
-                and r9,#0xFF
-                and r10,#0xFF
-                and r12,#0xFF
-
-                ldr r4,[r3,r4,lsl #2]
-                ldr r6,[r3,r6,lsl #2]
-                ldr r7,[r3,r7,lsl #2]
-                ldr r8,[r3,r8,lsl #2]
-                ldr r9,[r3,r9,lsl #2]
-                ldr r10,[r3,r10,lsl #2]
-                ldr r12,[r3,r12,lsl #2]
-                ldr r14,[r3,r14,lsl #2]
-
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                cmp r2,r5
-                blt p1
-
-                subs r0,#1
-                bne p11
-
-
-p999:           ldmfd r13!,{r0-r12,r14}
+                subs x1,x1,#1
+                b.ne p2
                 end;
 
-                           }
+
 end;
 
-procedure scrconvertnative2(src,screen:pointer);
+
+procedure scrconvertdl(src,screen:pointer);
 
 // --- rev 21070608
 
-var a,b,c:cardinal;
-    e:integer;
-    nx,ny:cardinal;
+var b:ptruint;
+    dxstart,nx,ny:uint64;
 
-label p1,p0,p002,p10,p11,p12,p999;
+label p1,p2;
 
 begin
-a:=displaystart;
-c:=integer(src);//$30800000;  // map start
-e:=bordercolor;
+
 b:=base+_pallette;
-ny:=yres;//nativey;
-nx:=xres*4;//nativex*4;
-                            {
+ny:=yres;
+nx:=(xres*4)+256;
+dxstart:=base+lpeek(base+$60018);
+
                 asm
+                ldr x0,screen
+                ldr x1,ny
+                ldr x2,nx
+                mov x3,#0
+                ldr x5,src
+                add x5,x5,#64
+                ldr x6,b
 
-                stmfd r13!,{r0-r12,r14}   //Push registers
-                ldr r1,c
-                ldr r2,screen
-                ldr r3,b
-                mov r5,r2
-            //    sub r2,#256
-            //    sub r5,#256
+p2:             add x4,x2,x0
+                sub x5,x5,#64
 
-                //upper border
+p1:             ldrb w3,[x5],#1
+                ldr w7,[x6,x3,lsl #2]
+                str w7,[x0],#4
+                cmp x0,x4
+                b.lt p1
 
-
-                ldr r0,ny
-
-p11:            ldr r4,nx                                   //active screen
-                add r5,r4 //#7168
-          //       add r2,#256
-           //      add r5,#256
-
-p1:
-                ldm r1!,{r4,r9}
-
-                mov r6,r4,lsr #8
-                mov r7,r4,lsr #16
-                mov r8,r4,lsr #24
-                mov r10,r9,lsr #8
-                mov r12,r9,lsr #16
-                mov r14,r9,lsr #24
-
-                and r4,#0xFF
-                and r6,#0xFF
-                and r7,#0xFF
-                and r9,#0xFF
-                and r10,#0xFF
-                and r12,#0xFF
-
-                ldr r4,[r3,r4,lsl #2]
-                ldr r6,[r3,r6,lsl #2]
-                ldr r7,[r3,r7,lsl #2]
-                ldr r8,[r3,r8,lsl #2]
-                ldr r9,[r3,r9,lsl #2]
-                ldr r10,[r3,r10,lsl #2]
-                ldr r12,[r3,r12,lsl #2]
-                ldr r14,[r3,r14,lsl #2]
-
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                ldm r1!,{r4,r9}
-
-                mov r6,r4,lsr #8
-                mov r7,r4,lsr #16
-                mov r8,r4,lsr #24
-                mov r10,r9,lsr #8
-                mov r12,r9,lsr #16
-                mov r14,r9,lsr #24
-
-                and r4,#0xFF
-                and r6,#0xFF
-                and r7,#0xFF
-                and r9,#0xFF
-                and r10,#0xFF
-                and r12,#0xFF
-
-                ldr r4,[r3,r4,lsl #2]
-                ldr r6,[r3,r6,lsl #2]
-                ldr r7,[r3,r7,lsl #2]
-                ldr r8,[r3,r8,lsl #2]
-                ldr r9,[r3,r9,lsl #2]
-                ldr r10,[r3,r10,lsl #2]
-                ldr r12,[r3,r12,lsl #2]
-                ldr r14,[r3,r14,lsl #2]
-
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                cmp r2,r5
-                blt p1
-
-                subs r0,#1
-                bne p11
-
-
-p999:           ldmfd r13!,{r0-r12,r14}
+                subs x1,x1,#1
+                b.ne p2
                 end;
 
-                            }
-end;
 
-
-procedure scrconvertnative3(src,screen:pointer);
-
-// --- rev 21070608
-
-var a,b,c:cardinal;
-    e:integer;
-    nx,ny:cardinal;
-    x,y:integer;
-
-label p1,p0,p002,p10,p11,p12,p999;
-
-begin
-a:=xres*yres-1;
-
-for x:=0 to a do
- begin
- PCardinal(screen)^:=systempallette[0,Pbyte(src)^];
- screen+=4; src+=1;
-  end;
-end;
-
-
-
-
-procedure scrconvertdl(screen:pointer);
-
-// --- rev 21070111
-
-var a,b:integer;
-    e:integer;
-    c,command, pixels, lines, dl:cardinal;
-
-const scr:cardinal=0;
-
-label p001;
-
-begin
-a:=displaystart;
-e:=bordercolor;
-c:=scr;
-b:=base+_pallette;
-dl:=lpeek(base+$60034);
-scr:=mainscreen;
- // rev 20170607
-
-// DL graphic mode
-
-//xxxxDDMM
-// xxxx = 0001 for RPi Retromachine
-// MM: 00: hi, 01 med 10 low 11 native borderless
-// DD: 00 8bpp 01 16 bpp 10 32 bpp 11 border
-
-//    2F06_0018 - display list start addr  ----TODO
-//                DL entry: 00xx_YYLLL_MM - display LLL lines in mode MM
-//                            xx: 00 - do nothing
-//                                01 - raster interrupt
-//                                10 - set pallette bank YY
-//                                11 - set horizontal scroll at YY
-//                          01xx_AAAAAAA - wait for vsync, then start DL @xxAAAAAA
-//                          10xx_AAAAAAA - set display address to xxAAAAAAA
-//                          11xx_AAAAAAA - goto address xxAAAAAAA
-
-//    2F06_0034 - current dl position ----TODO
-
-//    2F06_0008 - current graphics mode   ----TODO
-//      2F06_0009 - bytes per pixel
-//    2F06_000C - border color
-//    2F06_0010 - pallette bank           ----TODO
-//    2F06_0014 - horizontal pallette selector: bit 31 on, 30..20 add to $60010, 11:0 pixel num. ----TODO
-//    2F06_0018 - display list start addr  ----TODO
-//                DL entry: 00xx_YYLLL_MM - display LLL lines in mode MM
-//                            xx: 00 - do nothing
-//                                01 - raster interrupt
-//                                10 - set pallette bank YY
-//                                11 - set horizontal scroll at YY
-//                          10xx_AAAAAAA - set display address to xxAAAAAAA
-//                          11xx_AAAAAAA - goto address xxAAAAAAA
-//    2F06_001C - horizontal scroll right register ----TODO
-//    2F06_0020 - x res
-//    2F06_0024 - y res
-
-
-command:=lpeek(dl);
-if (command and $C0000000) = 0 then // display
-  begin
-  if command and $FF=$1C then       // border
-    begin
-    lines:=(command and $000FFF00) shr 8;
-    pixels:=lines*1920*4;    // border modes are always signalling 1920x1200
-                             {
-                             asm
-                push {r0-r9}
-                ldr r1,e
-                ldr r0,c
-                mov r2,r1
-                mov r3,r1
-                mov r4,r1
-                mov r5,r1
-                mov r6,r1
-                mov r7,r1
-                mov r8,r1
-                mov r8,r1
-                ldr r9,pixels
-                add r9,r0
-p001:           stm r0!,{r1,r2,r3,r4,r5,r6,r7,r8}
-                stm r0!,{r1,r2,r3,r4,r5,r6,r7,r8}
-                stm r0!,{r1,r2,r3,r4,r5,r6,r7,r8}
-                stm r0!,{r1,r2,r3,r4,r5,r6,r7,r8}
-                stm r0!,{r1,r2,r3,r4,r5,r6,r7,r8}
-                stm r0!,{r1,r2,r3,r4,r5,r6,r7,r8}
-                stm r0!,{r1,r2,r3,r4,r5,r6,r7,r8}
-                stm r0!,{r1,r2,r3,r4,r5,r6,r7,r8}
-                cmp r0,r9
-                blt p001
-                pop {r0-r9}
-                end;          }
-    end
-  else if command and $FF=$10 then       // hi res bordered 8bpp
-    begin
-    end
-  else if command and $FF=$13 then       // native bordreless 8bpp
-    begin
-    end
-  end;
-{
-                asm
-
-                stmfd r13!,{r0-r12,r14}   //Push registers
-                ldr r1,c
-                ldr r2,screen
-                ldr r3,b
-                mov r5,r2
-
-                //upper border
-
-                add r5,#307200
-                ldr r4,e
-                mov r6,r4
-                mov r7,r4
-                mov r8,r4
-                mov r9,r4
-                mov r10,r4
-                mov r12,r4
-                mov r14,r4
-
-
-p10:            stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                cmp r2,r5
-                blt p10
-
-                mov r0,#1120
-
-p11:            add r5,#256
-
-                //left border
-
-p0:             stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-
-                                    //active screen
-                add r5,#7168
-
-p1:
-                ldm r1!,{r4,r9}
-
-                mov r6,r4,lsr #8
-                mov r7,r4,lsr #16
-                mov r8,r4,lsr #24
-                mov r10,r9,lsr #8
-                mov r12,r9,lsr #16
-                mov r14,r9,lsr #24
-
-                and r4,#0xFF
-                and r6,#0xFF
-                and r7,#0xFF
-                and r9,#0xFF
-                and r10,#0xFF
-                and r12,#0xFF
-
-                ldr r4,[r3,r4,lsl #2]
-                ldr r6,[r3,r6,lsl #2]
-                ldr r7,[r3,r7,lsl #2]
-                ldr r8,[r3,r8,lsl #2]
-                ldr r9,[r3,r9,lsl #2]
-                ldr r10,[r3,r10,lsl #2]
-                ldr r12,[r3,r12,lsl #2]
-                ldr r14,[r3,r14,lsl #2]
-
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                ldm r1!,{r4,r9}
-
-                mov r6,r4,lsr #8
-                mov r7,r4,lsr #16
-                mov r8,r4,lsr #24
-                mov r10,r9,lsr #8
-                mov r12,r9,lsr #16
-                mov r14,r9,lsr #24
-
-                and r4,#0xFF
-                and r6,#0xFF
-                and r7,#0xFF
-                and r9,#0xFF
-                and r10,#0xFF
-                and r12,#0xFF
-
-                ldr r4,[r3,r4,lsl #2]
-                ldr r6,[r3,r6,lsl #2]
-                ldr r7,[r3,r7,lsl #2]
-                ldr r8,[r3,r8,lsl #2]
-                ldr r9,[r3,r9,lsl #2]
-                ldr r10,[r3,r10,lsl #2]
-                ldr r12,[r3,r12,lsl #2]
-                ldr r14,[r3,r14,lsl #2]
-
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                cmp r2,r5
-                blt p1
-
-                                  //right border
-                add r5,#256
-                ldr r4,e
-                mov r6,r4
-                mov r7,r4
-                mov r8,r4
-                mov r9,r4
-                mov r10,r4
-                mov r12,r4
-                mov r14,r4
-
-
-p002:           stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                subs r0,#1
-                bne p11
-                                  //lower border
-                add r5,#307200
-
-p12:            stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-                stm r2!,{r4,r6,r7,r8,r9,r10,r12,r14}
-
-                cmp r2,r5
-                blt p12
-p999:           ldmfd r13!,{r0-r12,r14}
-                end;
-}
 end;
 
 procedure sprite(screen:pointer);
@@ -1388,327 +1115,125 @@ procedure sprite(screen:pointer);
 // A sprite procedure
 // --- rev 21070111
 
-label p101,p102,p103,p104,p105,p106,p107,p108,p109,p999;
-label a7680,affff,affff0000,spritedata;
+label p101,p102,p103,p104,p105,p106,p107,p108,p109,p999,p901,p902;
 
-//var a7680:cardinal=0;
-//      affff:cardinal=0;
-//      affff0000:cardinal=0;
- //     spritedata:cardinal=0;
 
-var spritebase:integer;
-    nx:cardinal;
-    yr:cardinal;
-    scrl:cardinal;
-    base2:cardinal;
+var spritebase:uint64;
+    nx:uint64;
+    yr:uint64;
+    scrl:uint64;
+    base2:uint64;
 
 begin
 base2:=base+$60080;
 yr:=yres;
 spritebase:=base+_spritebase;
 nx:=xres*4+256;
-scrl:=integer(screen)+(xres+64)*yres*4;
-                     {
+scrl:=uint64(screen)+(xres+64)*yres*4;
+
                asm
-               stmfd r13!,{r0-r12,r14}     //Push registers
-               ldr r0,base2
-               str r0,spritedata
-               ldr r12,nx
-               str r12,a7680
-               mov r12,#0
-                                       //sprite
-               ldr r0,spritebase
- p103:         ldr r1,[r0],#4
-               mov r2,r1, lsl #16      // sprite 0 position
-               mov r3,r1, asr #16
-               asr r2,#14              // x pos*4
 
-               ldr r14,yr
-               cmp r3,r14
-               bge p107
+               ldr x15,base2             // pointer to the 1st sprite
+               ldr x16,nx                // pitch in x16
+               ldr x11,screen
+               ldr x18,scrl
 
-               cmp r2,#8192            // switch off the sprite if x>2048
-               blt p104
-p107:          add r12,#1
-               add r0,#4
-               cmp r12,#8
-               bge p999
+                mov x12,#0
+                                        // sprite
+               ldr x0,spritebase
+p103:          ldr w1,[x0],#4
+               lsl x2,x1, #48          // sprite 0 position
+               asr x3,x1, #16          // y pos
+               asr x2,x2, #46          // x pos*4     TODO use UBFM
+
+               ldr x14,yr              // if ypos>yr, goto p107
+               cmp x3,x14
+               b.ge p107
+
+               cmp w2,#8192            // switch off the sprite if x>2048
+               b.lt p104               // draw a sprite
+p107:          add x12,x12,#1          // next sprite
+               add x0,x0,#4
+               cmp x12,#8
+               b.ge p999               // if all sprites, exit
                b   p103
 
-p104:          ldr r4,a7680
-               mul r3,r3,r4
-               add r3,r2              // sprite pos
+p104:          mov x4,x16               //--- start drawing
+               mul x3,x3,x4             //  ypos:=ypos*pitch
+               add x3,x3,x2             // x3+=xpos*4; x3:= pointer to sprite start on screen
 
 
-               ldr r4,screen
-               add r3,r4              // pointer to upper left sprite pixel in r3
-               ldr r4,spritedata
-               add r4,r4,r12,lsl #2
-               ldr r4,[r4]
+              // ldr x4,screen
+               add x3,x3,x11              // pointer to upper left sprite pixel in r3
+               mov x4,x15                // sprite def addr
+               .long 0x8b0c0884          //  add x4,x4,x12,lsl #2  - add sprite #
+               ldr w4,[x4]               // sprite def ptr in x4
 
-               ldr r1,[r0],#4
-               mov r2,r1,lsl #16
-               lsr r2,#16             // xzoom
-               lsr r1,#16             // yzoom
-               cmp r1,#8
-               movgt r1,#8            // zoom control, maybe switch it off?
-               cmp r2,#8
-               movgt r2,#8
-               cmp r1,#1
-               movle r1,#1
-               cmp r2,#1
-               movle r2,#1
-               mov r7,r2
-               mov r8,r2,lsl #7        // xzoom * 128 (128=4*32)
-               mov r9,r1,lsl #5        //y zoom * 32
-               mov r10,r1              //y zoom counter
-               mov r6,#32
+               ldr w1,[x0],#4
+               lsl x2,x1,#48
+               lsr x2,x2,#48         // xzoom
+               lsr x1,x1,#16         // yzoom
 
-               push {r0}
+               mov x7,x2
+               lsl x8,x2, #7        // xzoom * 128 (128=4*32)
+               lsl x9,x1, #5        // y zoom * 32
+               mov x10,x1           // y zoom counter
+               mov x6,#32
 
 p101:
-               ldr r14,screen
-               cmp r3,r14
-               bge p109
-               add r3,r8
+             //  ldr x14,screen
+               cmp x3,x11
+               b.ge p109
+               add x3,x3,x8
+                b p106
+
+p109:          ldr w5,[x4],#4  // get a pixel
+               cmp w5,#0
+               b.ne p102       // if not 0, draw
+               lsr x17,x8,#5
+               add x3,x3,x17
+               mov x7,x2
+               subs x6,x6,#1
+               b.ne p101
                b p106
 
-p109:          ldr r5,[r4],#4
-               cmp r5,#0
-               bne p102
-               add r3,r3,r8,lsr #5
-               mov r7,r2
-               subs r6,#1
-               bne p101
-               b p106
 
-p102:          ldr r0,[r3]
-         //      cmp r12,r0,lsr #28
-         //      strge r5,[r3],#4
-               str r5,[r3],#4
-               addlt r3,#4
-               subs r7,#1
-               bne p102
+p102:          str w5,[x3],#4  // inner loop
+               subs x7,x7,#1
+               b.ne p102
 
-p105:          mov r7,r2
-               subs r6,#1
-               bne p109
+p105:          mov x7,x2
+               subs x6,x6,#1
+               b.ne p109       // outer loop -x
 
-p106:          ldr r0,a7680
-               add r3,r0
-               sub r3,r8
+p106:          mov x17,x16
+               add x3,x3,x17  // add pitch
+               sub x3,x3,x8   // sub width
 
-               ldr r14,scrl
-               cmp r3,r14
-               bge p108
+          //     ldr x14,scrl
+               cmp x3,x18
+               b.ge p108      // if out of screen, abort drawing
 
-               subs r10,#1
-               subne r4,#128
-               addeq r10,r1
-               mov r6,#32
-               subs r9,#1
-               bne p101
+               subs x10,x10,#1
+               b.eq p901
+               sub x4,x4,#128
+               b p902
+ p901:              add x10,x10,x1
+ p902:              mov x6,#32
+               subs x9,x9,#1
+               b.ne p101
 
-p108:          pop {r0}
+p108:
 
 
-               add r12,#1
-               cmp r12,#8
-               bne p103
-               b p999
-
-affff:         .long 0xFFFF
-affff0000:     .long 0xFFFF0000
-a7680:         .long 7680
-spritedata:    .long base+0x60080
-
-p999:          ldmfd r13!,{r0-r12,r14}
-               end;   }
-end;
-
-procedure sprite2(screen:pointer);
-
-// A sprite procedure
-// --- rev 21070111
-
-label p101,p102,p103,p104,p105,p106,p107,p108,p109,p999;
-label a7680,affff,affff0000,spritedata;
-
-//var a7680:cardinal=0;
-//      affff:cardinal=0;
-//      affff0000:cardinal=0;
- //     spritedata:cardinal=0;
-
-var spritebase:integer;
-    nx:cardinal;
-    yr:cardinal;
-    scrl:cardinal;
-    base2:cardinal;
-
-begin
-base2:=base+$60080;
-yr:=yres;
-spritebase:=base+_spritebase;
-nx:=xres*4;
-scrl:=integer(screen)+(xres)*yres*4;
-                    {
-               asm
-               stmfd r13!,{r0-r12,r14}     //Push registers
-               ldr r0,base2
-               str r0,spritedata
-               ldr r12,nx
-               str r12,a7680
-               mov r12,#0
-                                       //sprite
-               ldr r0,spritebase
- p103:         ldr r1,[r0],#4
-               mov r2,r1, lsl #16      // sprite 0 position
-               mov r3,r1, asr #16
-               asr r2,#14              // x pos*4
-
-               ldr r14,yr
-               cmp r3,r14
-               bge p107
-
-               cmp r2,#8192            // switch off the sprite if x>2048
-               blt p104
-p107:          add r12,#1
-               add r0,#4
-               cmp r12,#8
-               bge p999
-               b   p103
-
-p104:          ldr r4,a7680
-               mul r3,r3,r4
-               add r3,r2              // sprite pos
-
-
-               ldr r4,screen
-               add r3,r4              // pointer to upper left sprite pixel in r3
-               ldr r4,spritedata
-               add r4,r4,r12,lsl #2
-               ldr r4,[r4]
-
-               ldr r1,[r0],#4
-               mov r2,r1,lsl #16
-               lsr r2,#16             // xzoom
-               lsr r1,#16             // yzoom
-               cmp r1,#8
-               movgt r1,#8            // zoom control, maybe switch it off?
-               cmp r2,#8
-               movgt r2,#8
-               cmp r1,#1
-               movle r1,#1
-               cmp r2,#1
-               movle r2,#1
-               mov r7,r2
-               mov r8,r2,lsl #7        // xzoom * 128 (128=4*32)
-               mov r9,r1,lsl #5        //y zoom * 32
-               mov r10,r1              //y zoom counter
-               mov r6,#32
-
-               push {r0}
-
-p101:
-               ldr r14,screen
-               cmp r3,r14
-               bge p109
-               add r3,r8
-               b p106
-
-p109:          ldr r5,[r4],#4
-               cmp r5,#0
-               bne p102
-               add r3,r3,r8,lsr #5
-               mov r7,r2
-               subs r6,#1
-               bne p101
-               b p106
-
-p102:          ldr r0,[r3]
-         //      cmp r12,r0,lsr #28
-         //      strge r5,[r3],#4
-               str r5,[r3],#4
-               addlt r3,#4
-               subs r7,#1
-               bne p102
-
-p105:          mov r7,r2
-               subs r6,#1
-               bne p109
-
-p106:          ldr r0,a7680
-               add r3,r0
-               sub r3,r8
-
-               ldr r14,scrl
-               cmp r3,r14
-               bge p108
-
-               subs r10,#1
-               subne r4,#128
-               addeq r10,r1
-               mov r6,#32
-               subs r9,#1
-               bne p101
-
-p108:          pop {r0}
-
-
-               add r12,#1
-               cmp r12,#8
-               bne p103
-               b p999
-
-affff:         .long 0xFFFF
-affff0000:     .long 0xFFFF0000
-a7680:         .long 7680
-spritedata:    .long base+0x60080
-
-p999:          ldmfd r13!,{r0-r12,r14}
-               end;  }
+               add x12,x12,#1
+               cmp x12,#8
+               b.ne p103
+ p999:
+               end;
 end;
 
 // ------  Helper procedures
-
-function Do_SysCall(sysnr,param1,param2,param3:   int64    ):integer; external name 'FPC_SYSCALL3';
-
-function fpmprotect(addr,size,prot:uint64):longint;
-
-begin
- result:=Do_SysCall(227,addr,size,prot);
-end;
-
-procedure removeramlimits(addr:uint64);
-
-//var Entry:TPageTableEntry;
-   var dummy:longint;
-
-begin
-dummy:=fpmprotect((addr and $FFFFF000),$4000,PROT_READ or PROT_WRITE or PROT_EXEC);
-end;
-
-function remapram(from,too,size:cardinal):cardinal;
-
-//var Entry:TPageTableEntry;
-//    s,len:integer;
-
-begin
-//s:=size;
-//repeat
-//  Entry:=PageTableGetEntry(from);
-//  len:=entry.Size;
-//  entry.virtualaddress:=too;
-//  Entry.Flags:=$3b2;
-//  PageTableSetEntry(Entry);
-//  too+=len;
-//  from+=len;
-//  s-=len;
-//until s<=0;
-//CleanDataCacheRange(from, size);
-//InvalidateDataCacheRange(too, size);
-end;
-
 
 
 function gettime:int64; inline;
@@ -1743,52 +1268,52 @@ end;
 //   rev. 20161124
 // ----------------------------------------------------------------------
 
-procedure poke(addr:uint64;b:byte); inline;
+procedure poke(addr:uint64;b:byte); //inline;
 
 begin
 PByte(addr)^:=b;
 end;
 
-procedure dpoke(addr:uint64;w:word); inline;
+procedure dpoke(addr:uint64;w:word); //inline;
 
 begin
-PWord(addr and $FFFFFFFE)^:=w;
+PWord(addr and $FFFFFFFFFFFFFFFE)^:=w;
 end;
 
-procedure lpoke(addr:uint64;c:uint64); inline;
+procedure lpoke(addr:uint64;c:uint32); //inline;
 
 begin
-Puint64(addr and $FFFFFFFC)^:=c;
+Puint32(addr and $FFFFFFFFFFFFFFFC)^:=c;
 end;
 
-procedure slpoke(addr:uint64;i:integer); inline;
+procedure slpoke(addr:uint64;i:integer); //inline;
 
 begin
-PInteger(addr and $FFFFFFFC)^:=i;
+PInteger(addr and $FFFFFFFFFFFFFFFC)^:=i;
 end;
 
-function peek(addr:uint64):byte; inline;
+function peek(addr:uint64):byte; //inline;
 
 begin
-peek:=Pbyte(addr)^;
+peek:={%H-}Pbyte(addr)^;
 end;
 
-function dpeek(addr:uint64):word; inline;
+function dpeek(addr:uint64):word;// inline;
 
 begin
-dpeek:=PWord(addr and $FFFFFFFE)^;
+dpeek:=PWord(addr and $FFFFFFFFFFFFFFFE)^;
 end;
 
-function lpeek(addr:uint64):uint64; inline;
+function lpeek(addr:uint64):cardinal;// inline;
 
 begin
-lpeek:=Puint64(addr and $FFFFFFFC)^;
+lpeek:=PCardinal(addr and $FFFFFFFFFFFFFFFC)^;
 end;
 
-function slpeek(addr:uint64):integer;  inline;
+function slpeek(addr:uint64):integer; // inline;
 
 begin
-slpeek:=PInteger(addr and $FFFFFFFC)^;
+slpeek:=PInteger(addr and $FFFFFFFFFFFFFFFC)^;
 end;
 
 // ------- Keyboard and mouse procedures
@@ -1855,128 +1380,87 @@ end;
 
 procedure graphics(mode:integer);
 
-// rev 20170607
+// rev 20200620
 
 // Graphics mode set:
-// 16 - HiRes 8bpp
-// 17 - MedRes 16 bpp
-// 18 - LoRes 32 bpp
-// 19 - native, borderless, 8 bpp
+// 0 - 2560x1440
+// 1 - 1920x1080
+// 2 - 1280x720
+// 3 - 960x540
+// 4 - 640x360
+// 5 - 480x270
+// 6 - 320x180
+// 7 - 240x135
+// 8 - 1920x1200 bordered @2560x1440
+// 9 - 1280x800 bordered @ 1920x1080
+//10 - 960x600  bordered @ 2560x1440 /x2
+//11 - 640x400  bordered @ 1920x1200 /x2
+//12 - 480x300
+//13 - 320x200
 
-// DL graphic mode
+// 0000_0000  -  2FF0_FFFF - 6502 area
+//    0000_D400  -  2FF0_D418 SID
+//    0000_D420  -  POKEY --- TODO
+//
+// 0001_0000  -  2FF5_FFFF - system data area
+//    0001_0000  -  0004_FFFF pallette banks; 65536 entries
+//    0005_0000  -  0005_1FFF font definition; 256 char @8x16 px
+//    0005_2000  -  0005_9FFF static sprite defs 8x4k
+//    0005_A000  -  0005_FFFF static display list area
+//
+// 0006_0000  -  0006_FFFF --- copper
+//    0006_0000 - frame counter
+//    0006_0004 - display start
+//    0006_0008 - current graphics mode   ----TODO
+//      0006_000a - bytes per pixel
+//    0006_000C - border color
+//    0006_0010 - pallette bank           ----TODO
+//    0006_0014 - horizontal pallette selector: bit 31 on, 30..20 add to $60010, 11:0 pixel num. ----TODO
+//    0006_0018 - display list start addr  ----TODO
+//    0006_001C - horizontal scroll right register ----TODO
+//    0006_0020 - x res
+//    0006_0024 - y res
+//    0006_0028 - KBD. 28 - ASCII 29 modifiers, 2A raw code 2B key released
+//    0006_002C - mouse. 6002c,d x 6002e,f y
+//    0006_0030 - mouse keys, 0006_0032 - mouse wheel; 127 up 129 down
+//    0006_0034 - current dl position ----TODO
+//    0006_0040 - 2FF6_007C sprite control long 0 31..16 y pos  15..0 x pos
+//                                         long 1 30..16 y zoom 15..0 x zoom
+//    0006_0080 - 0006_009C dynamic sprite data pointer
+//    0006_00A0 - text cursor position
+//    0006_00A4 - text color
+//    0006_00A8 - background color
+//    0006_00AC - text size and pitch
+//    0006_00B0 - text x res
+//    0006_00B4 - text y res                                                             A0000000
+//    0006_00B8 - native x resolution
+//    0006_00BC - native y resolution
 
-//xxxxDDMM
-// xxxx = 0001 for RPi Retromachine
-// MM: 00: hi, 01 med 10 low 11 native borderless
-// DD: 00 8bpp 01 16 bpp 10 32 bpp 11 border
-
-//    2F06_0018 - display list start addr  ----TODO
-//                DL entry: 00xx_YYLLL_MM - display LLL lines in mode MM
-//                            xx: 00 - do nothing
-//                                01 - raster interrupt
-//                                10 - set pallette bank YY
-//                                11 - set horizontal scroll at YY
-//                          01xx_AAAAAAA - wait for vsync, then start DL @xxAAAAAA
-//                          10xx_AAAAAAA - set display address to xxAAAAAAA
-//                          11xx_AAAAAAA - goto address xxAAAAAAA
-
-//    2F06_0034 - current dl position ----TODO
-
-//    2F06_0008 - current graphics mode   ----TODO
-//      2F06_0009 - bytes per pixel
-//    2F06_000C - border color
-//    2F06_0010 - pallette bank           ----TODO
-//    2F06_0014 - horizontal pallette selector: bit 31 on, 30..20 add to $60010, 11:0 pixel num. ----TODO
-//    2F06_0018 - display list start addr  ----TODO
-//                DL entry: 00xx_YYLLL_MM - display LLL lines in mode MM
-//                            xx: 00 - do nothing
-//                                01 - raster interrupt
-//                                10 - set pallette bank YY
-//                                11 - set horizontal scroll at YY
-//                          10xx_AAAAAAA - set display address to xxAAAAAAA
-//                          11xx_AAAAAAA - goto address xxAAAAAAA
-//    2F06_001C - horizontal scroll right register ----TODO
-//    2F06_0020 - x res
-//    2F06_0024 - y res
+ //zoom2-colors2-border1-scroll1-gr/txt1-borderline1-pallette#8-scroll4-pixels12        2560-0-0-00000000
 begin
-if mode=16 then
+if mode=0 then
   begin
-  poke(base+$60008,16);
-  poke(base+$60009,8);
-  lpoke(base+$60010,0);
-  lpoke(base+$60014,0);
-  lpoke(base+$60020,1792);
-  lpoke(base+$60024,1120);
-  lpoke (base+$60018,base+$60410);
-  lpoke (base+$60034,base+$60410);
-  lpoke (base+$60410,$0000281C);  // upper border 40 lines
-  lpoke (base+$60414,$00046000);  // main display 1120 lines @ hi/8bpp
-  lpoke (base+$60418,$0000281C);  // lower border 40 lines
-  lpoke (base+$6041C,base+$60410+$40000000);  // wait vsync and restart DL
-  end
-else if mode=17 then
-  begin
-  end
-else if mode=18 then
-  begin
-  end
-else if mode=19 then
-  begin
-  poke(base+$60008,16);
-  poke(base+$60009,8);
-  lpoke(base+$60010,0);
-  lpoke(base+$60014,0);
-  lpoke(base+$60020,nativex);
-  lpoke(base+$60024,nativey);
-  lpoke (base+$60018,base+$60410);
-  lpoke (base+$60034,base+$60410);
-  lpoke (base+$60414,(nativey shl 8)+3);      // main display nativey lines @ hi/8bpp
-  lpoke (base+$6041C,base+$60410+$40000000);  // wait vsync and restart DL
-  end
-else if mode=144 then        // double buffered high 8 bit
-  begin
-  poke(base+$60008,144);
-  poke(base+$60009,8);
-  lpoke(base+$60010,0);
-  lpoke(base+$60014,0);
-  lpoke(base+$60020,1792);
-  lpoke(base+$60024,1120);
+  if nativex=2560 then
+    begin
+    for i:=0 to 1439 do
+      begin
+      lpoke(base+$5a000+8*i,$A0000000);
+      lpoke(base+$5a000+8*i+4,i*2560);
+      end;
+    i:=1440;
+    lpoke(base+$5a000+8*i,$A0000000);
+    lpoke(base+$5a000+8*i+4,i*2560);
+    lpoke (base+$60018,$5A000);
+    dpoke (base+$60008,0);
+    dpoke(base+$6000a,256);
+    end
 
-  lpoke (base+$60018,base+$60410);
-  lpoke (base+$60034,base+$60410);
-  lpoke (base+$60410,$B0800000);  // display start @ 30800000
-  lpoke (base+$60414,$0000281C);  // upper border 40 lines
-  lpoke (base+$60418,$00046000);  // main display 1120 lines @ hi/8bpp
-  lpoke (base+$6041c,$0000281C);  // lower border 40 lines
-  lpoke (base+$60420,$B0b00000);  // display start @ 30b00000
-  lpoke (base+$60424,base+$60428+$40000000);  // wait vsync and restart DL @ 60428
-  lpoke (base+$60428,$0000281C);  // upper border
-  lpoke (base+$6042c,$00046000);  // main display 1120 lines @ hi/8bpp
-  lpoke (base+$60430,$0000281C);  // lower border 40 lines
-  lpoke (base+$60434,$B0800000);  // display start @ 30800000
-  lpoke (base+$60438,base+$60414+$40000000);  // wait vsync and restart DL @ 60414
-  end
-else if mode=147 then          // double buffered native 8bit
-  begin
-  poke(base+$60008,147);
-  poke(base+$60009,8);
-  lpoke(base+$60010,0);
-  lpoke(base+$60014,0);
-  lpoke(base+$60020,nativex);
-  lpoke(base+$60024,nativey);
-  lpoke (base+$60018,base+$60410);
-  lpoke (base+$60034,base+$60410);
-  lpoke (base+$60410,$B0800000);  // display start @ 30800000
-  lpoke (base+$60414,(nativey shl 8)+3);  // display the screen
-  lpoke (base+$60418,$B0b00000);  // display start @ 30a00000
-  lpoke (base+$6041c,base+$60420+$40000000);  // wait vsync and restart DL @ 60420
-  lpoke (base+$60420,(nativey shl 8)+3);
-  lpoke (base+$60424,$B0800000);  // display start @ 30b00000
-  lpoke (base+$60428,base+$60414+$40000000);  // wait vsync and restart DL @ 60414
-  end
+
+  else mode:=1;
+  end;
 end;
 
-procedure blit(from,x,y,too,x2,y2,length,lines,bpl1,bpl2:integer);
+procedure blit(from,x,y,too,x2,y2,length,lines,bpl1,bpl2:int64);
 
 // --- TODO - write in asm, add advanced blitting modes
 // --- rev 21070111
@@ -2040,15 +1524,12 @@ procedure cls(c:integer);
 
 // --- rev 20170111
 
-var c2, i,l:integer;
+var i,l:integer;
     c3: cardinal;
-    screenstart:integer;
+
 
 begin
-c:=c mod 256;
-l:=(xres*yres) div 4 ;
-c3:=c+(c shl 8) + (c shl 16) + (c shl 24);
-for i:=0 to l do lpoke(displaystart+4*i,c3);
+box(0,0,xres,yres,c);
 end;
 
 //  ---------------------------------------------------------------------
@@ -2057,15 +1538,15 @@ end;
 //   rev. 20170111
 //  ---------------------------------------------------------------------
 
-procedure putpixel(x,y,color:integer); inline;
+procedure putpixel(x,y,color:integer); // inline;
 
 label p999;
 
-var adr:integer;
+var adr:ptruint;
 
 begin
 if (x<0) or (x>=xres) or (y<0) or (y>yres) then goto p999;
-adr:=displaystart+x+xres*y;
+adr:=(ptruint(displaystarthi) shl 32)+ displaystart+x+xres*y;
 poke(adr,color);
 p999:
 end;
@@ -2079,13 +1560,13 @@ end;
 
 function getpixel(x,y:integer):integer; inline;
 
-var adr:integer;
+var adr:ptruint;
 
 begin
   if (x<0) or (x>=xres) or (y<0) or (y>yres) then result:=0
 else
   begin
-  adr:=displaystart+x+xres*y;
+  adr:=(ptruint(displaystarthi) shl 32)+ displaystart+x+xres*y;
   result:=peek(adr);
   end;
 end;
@@ -2099,16 +1580,16 @@ end;
 //  ---------------------------------------------------------------------
 
 
-procedure box(x,y,l,h,c:integer);
+procedure box(x,y,l,h,c:int64);
 
 label p101,p102,p999;
 
-var screenptr:cardinal;
-    xr:integer;
+var screenptr:ptruint;
+    xr:int64;
 
 begin
 
-screenptr:=displaystart;
+screenptr:=displaystart+(uint64(displaystarthi) shl 32);
 xr:=xres;
 if x<0 then begin l:=l+x; x:=0; if l<1 then goto p999; end;
 if x>=xres then goto p999;
@@ -2117,40 +1598,33 @@ if y>=yres then goto p999;
 if x+l>=xres then l:=xres-x;
 if y+h>=yres then h:=yres-y;
 
-// TODO: asm a64
 
-for i:=x to x+l-1 do
-  for j:=y to y+h-1 do
-    putpixel(x,y,c);
-
-
-              {
              asm
-             push {r0-r7}
-             ldr r2,y
-             ldr r7,xr
-             mov r3,r7
-             ldr r1,x
-             mul r3,r3,r2
-             ldr r4,l
-             add r3,r1
-             ldr r0,screenptr
-             add r0,r3
-             ldrb r3,c
-             ldr r6,h
 
-p102:        mov r5,r4
-p101:        strb r3,[r0],#1  // inner loop
-             subs r5,#1
-             bne p101
-             add r0,r7
-             sub r0,r4
-             subs r6,#1
-             bne p102
+              ldr x2,y
+              ldr x7,xr
+              mov x3,x7
+              ldr x1,x
+              mul x3,x3,x2
+              ldr x4,l
+              add x3,x3,x1
+              ldr x0,screenptr
+              add x0,x0,x3
+              ldrb w3,c
+              ldr x6,h
 
-             pop {r0-r7}
+p102:         mov x5,x4
+p101:         strb w3,[x0],#1  // inner loop
+              subs x5,x5,#1
+              b.ne p101
+              add x0,x0,x7
+              sub x0,x0,x4
+              subs x6,x6,#1
+              b.ne p102
+
+
              end;
-                    }
+
 p999:
 end;
 
