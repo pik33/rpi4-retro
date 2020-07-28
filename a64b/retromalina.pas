@@ -1093,7 +1093,29 @@ nx:=(xres*4)+256;
 dxstart:=base+lpeek(base+$60018);
 
                 asm
-                ldr x0,screen
+                adr x8,#0x40       //00
+                ldr x9,dxstart     //04
+
+                ldr x10,[x9]       //08
+                and x10,#0x0F      //0C
+                lsl x10,#8         //10
+                add x10,x10,x8     //14
+                br x10             //18
+                nop                //1c
+
+                nop                //20
+                nop                //24
+                nop                //28
+                nop                //2c
+                nop                //30
+                nop                //34
+                nop                //38
+                nop                //3c
+
+
+  // 00
+
+                ldr x0,screen     //40
                 ldr x1,ny
                 ldr x2,nx
                 mov x3,#0

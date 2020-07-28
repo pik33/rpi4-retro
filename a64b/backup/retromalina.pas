@@ -1047,10 +1047,10 @@ b:=base+_pallette;
 ny:=yres;
 nx:=(xres*4)+256;
 dxstart:=base+lpeek(base+$60018);
-stupidadd
+
 
                 asm
-                stupidadd
+
                 ldr x0,screen
                 ldr x1,ny
                 ldr x2,nx
