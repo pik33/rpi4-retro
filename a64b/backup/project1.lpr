@@ -1,6 +1,6 @@
 program project1;
 
-uses cthreads, retromalina, sysutils,sdl2,crt,retro, raymarch;
+uses cthreads, retromalina, sysutils,sdl2,retro;
 
 var i,j:integer;
   tttt:int64;
@@ -9,6 +9,8 @@ var i,j:integer;
   fhp:^int64;
   rr,gg,bb:byte;
   testas:TAnimatedSprite;
+  bźdxiągwa:integer;
+
 
 begin
 initmachine(256);
@@ -99,7 +101,7 @@ if xres=2560 then
   end
 else
   begin
-
+ {
   t:=gettime;
   box(00,0,1920,1080,120);
   tttt:=gettime-t;
@@ -142,7 +144,7 @@ else
      waitvbl;
      end;
 
-
+ }
   box(320,120,1280,800,147);
   outtextxyz(320,120,'160x50 border text screen ',157,1,1) ;
   for i:=0 to 600 do
@@ -161,7 +163,8 @@ else
     j:=0;
     sprite7zoom:=$00020002;
     sprite1zoom:=$00030003;
-    repeat
+while keypressed do readkey;
+repeat
 
   waitvbl;
   if (framecnt mod 3)=0 then begin
@@ -173,6 +176,8 @@ else
   //  sprite1zoom:=sprite7zoom;
     j+=4096; if j>=65536 then j:=0;
   sprite1ptr:=cardinal(@testas)+j;
+  box(300,300,200,100,0); outtextxyz(300,300,inttohex(lpeek(base+$60028)),40,2,2);
+
   until keypressed;
 
 

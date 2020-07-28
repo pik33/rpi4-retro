@@ -512,6 +512,9 @@ function mprotect(address:pointer;length:uint64;params:integer):integer; cdecl; 
 function fopen(name,mode:PChar):ptruint; cdecl; external 'libc';
 function fread(bufor:pointer;size,number:int64;fh:ptruint):ptrint; cdecl; external 'libc';
 function fclose(fh:ptruint):ptrint; cdecl; external 'libc';
+function fileopen2(n,m:string):ptrint;
+function fileread2(fh:ptruint;buffer:pointer;il:ptruint):ptrint;
+function fileclose2(fh:ptrint):ptrint;
 
 {$linklib 'c'}
 
@@ -613,8 +616,9 @@ var il,i:integer;
 
 
     mousefile:int64;
-       name:string;
+    name:string;
     rec:TSearchrec;
+
 begin
 
 if findfirst('/dev/input/by-id/*event-mouse',faanyfile,rec)=0 then
@@ -622,7 +626,7 @@ if findfirst('/dev/input/by-id/*event-mouse',faanyfile,rec)=0 then
   name:=rec.name;
   findclose(rec);
   name:='/dev/input/by-id/'+name;
-  mousefile:=fileopen2(name,'rb');
+//  mousefile:=fileopen2(name,'rb');
   end;
 
 // Open the mouse file for reading
@@ -993,7 +997,7 @@ amouse.start;
 akeyboard:=tkeyboard.create(true);
 akeyboard.start;
 
-//startmousereportbuffer;
+startreportbuffer;
 
 // start windows --- TODO - remove this from here!!!
 poke(base+$1000,mmm);
@@ -1033,6 +1037,51 @@ procedure scrconvertnative(src,screen:pointer);
 
 var b:ptruint;
     dxstart,nx,ny:uint64;
+{$MACRO ON}
+{$define stupidadd:=b:=b;}
+label p1,p2;
+
+begin
+
+b:=base+_pallette;
+ny:=yres;
+nx:=(xres*4)+256;
+dxstart:=base+lpeek(base+$60018);
+stupidadd
+
+                asm
+                stupidadd
+                ldr x0,screen
+                ldr x1,ny
+                ldr x2,nx
+                mov x3,#0
+                ldr x5,src
+                add x5,x5,#64
+                ldr x6,b
+
+p2:             add x4,x2,x0
+                sub x5,x5,#64
+
+p1:             ldrb w3,[x5],#1
+                ldr w7,[x6,x3,lsl #2]
+                str w7,[x0],#4
+                cmp x0,x4
+                b.lt p1
+
+                subs x1,x1,#1
+                b.ne p2
+                end;
+
+
+end;
+
+
+procedure scrconvertdl(src,screen:pointer);
+
+// --- rev 21070608
+
+var b:ptruint;
+    dxstart,nx,ny:uint64;
 
 label p1,p2;
 
@@ -1067,7 +1116,6 @@ p1:             ldrb w3,[x5],#1
 
 
 end;
-
 
 procedure sprite(screen:pointer);
 
@@ -1125,7 +1173,8 @@ p104:          mov x4,x16               //--- start drawing
               // ldr x4,screen
                add x3,x3,x11              // pointer to upper left sprite pixel in r3
                mov x4,x15                // sprite def addr
-               .long 0x8b0c0884          //  add x4,x4,x12,lsl #2  - add sprite #
+//             .long 0x8b0c0884
+              add x4,x4,x12,lsl #2  //- add sprite #
                ldr w4,[x4]               // sprite def ptr in x4
 
                ldr w1,[x0],#4
@@ -1254,7 +1303,7 @@ end;
 function peek(addr:uint64):byte; //inline;
 
 begin
-peek:={%H-}Pbyte(addr)^;
+peek:=Pbyte(addr)^;
 end;
 
 function dpeek(addr:uint64):word;// inline;

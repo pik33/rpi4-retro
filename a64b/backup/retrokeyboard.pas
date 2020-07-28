@@ -291,7 +291,7 @@ repeat
   if kbdpresent=0 then
     begin
     il:=fileread2(kbdfile,@m[0],24);
-    if il<>24 then
+    if il<>16 then
       begin
       fileclose(kbdfile);
       kbdpresent:=-1;

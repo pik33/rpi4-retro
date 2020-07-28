@@ -42,7 +42,7 @@ var mouse_report_buffer: array[0..4095] of integer;
 
 mousereportthread:TRetroMouse;
 
-mousefile:integer;
+mousefile:int64;
 
 function getmousereport:TMousereport;
 procedure startmousereportbuffer;
@@ -66,17 +66,7 @@ var //mousefile:integer;
     m:array[0..23] of byte;
     m2:md absolute m;
 
-function fileopen2(n,m:string):int64;
 
-begin
-result:=int64(fopen(pchar(n),pchar(m)));
-end;
-
-function fileread2(fh:int64;buffer:pointer;il:int64):int64;
-
-begin
-result:=fread(buffer,1,il,pointer(fh));
-end;
 
 
 procedure stopmousereportbuffer;

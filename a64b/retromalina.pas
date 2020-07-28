@@ -512,6 +512,9 @@ function mprotect(address:pointer;length:uint64;params:integer):integer; cdecl; 
 function fopen(name,mode:PChar):ptruint; cdecl; external 'libc';
 function fread(bufor:pointer;size,number:int64;fh:ptruint):ptrint; cdecl; external 'libc';
 function fclose(fh:ptruint):ptrint; cdecl; external 'libc';
+function fileopen2(n,m:string):ptrint;
+function fileread2(fh:ptruint;buffer:pointer;il:ptruint):ptrint;
+function fileclose2(fh:ptrint):ptrint;
 
 {$linklib 'c'}
 
@@ -613,8 +616,9 @@ var il,i:integer;
 
 
     mousefile:int64;
-       name:string;
+    name:string;
     rec:TSearchrec;
+
 begin
 
 if findfirst('/dev/input/by-id/*event-mouse',faanyfile,rec)=0 then
@@ -622,7 +626,7 @@ if findfirst('/dev/input/by-id/*event-mouse',faanyfile,rec)=0 then
   name:=rec.name;
   findclose(rec);
   name:='/dev/input/by-id/'+name;
-  mousefile:=fileopen2(name,'rb');
+//  mousefile:=fileopen2(name,'rb');
   end;
 
 // Open the mouse file for reading
@@ -993,7 +997,7 @@ amouse.start;
 akeyboard:=tkeyboard.create(true);
 akeyboard.start;
 
-//startmousereportbuffer;
+startreportbuffer;
 
 // start windows --- TODO - remove this from here!!!
 poke(base+$1000,mmm);
@@ -1033,7 +1037,8 @@ procedure scrconvertnative(src,screen:pointer);
 
 var b:ptruint;
     dxstart,nx,ny:uint64;
-
+{$MACRO ON}
+{$define stupidadd:=b:=b;}
 label p1,p2;
 
 begin
@@ -1043,7 +1048,9 @@ ny:=yres;
 nx:=(xres*4)+256;
 dxstart:=base+lpeek(base+$60018);
 
+
                 asm
+
                 ldr x0,screen
                 ldr x1,ny
                 ldr x2,nx
@@ -1166,7 +1173,8 @@ p104:          mov x4,x16               //--- start drawing
               // ldr x4,screen
                add x3,x3,x11              // pointer to upper left sprite pixel in r3
                mov x4,x15                // sprite def addr
-               .long 0x8b0c0884          //  add x4,x4,x12,lsl #2  - add sprite #
+//             .long 0x8b0c0884
+              add x4,x4,x12,lsl #2  //- add sprite #
                ldr w4,[x4]               // sprite def ptr in x4
 
                ldr w1,[x0],#4
@@ -1295,7 +1303,7 @@ end;
 function peek(addr:uint64):byte; //inline;
 
 begin
-peek:={%H-}Pbyte(addr)^;
+peek:=Pbyte(addr)^;
 end;
 
 function dpeek(addr:uint64):word;// inline;

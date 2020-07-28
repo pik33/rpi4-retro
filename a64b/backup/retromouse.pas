@@ -42,7 +42,7 @@ var mouse_report_buffer: array[0..4095] of integer;
 
 mousereportthread:TRetroMouse;
 
-mousefile:integer;
+mousefile:int64;
 
 function getmousereport:TMousereport;
 procedure startmousereportbuffer;
@@ -132,7 +132,7 @@ name:='/dev/input/by-id/'+name;
 // Open the mouse file for reading
 i:=0;
 repeat
-  mousefile:=fileopen(name,'rb');
+  mousefile:=fileopen2(name,'rb');
   inc(i);
   sleep(10);
 until (mousefile>0) or (i>10);
@@ -155,7 +155,7 @@ begin
 repeat
   if mousepresent=0 then
     begin
-    mil:=fileread(mousefile,@m[0],16);
+    mil:=fileread2(mousefile,@m[0],16);
     if mil<>16 then
       begin
       fileclose(mousefile);
